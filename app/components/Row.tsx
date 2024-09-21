@@ -15,9 +15,21 @@ export default function Row({
   const valBox3 = row === 1 ? 2 : row === 2 ? 5 : 8;
   return (
     <div className="row flex gap-1">
-      <Button onClick={click} index={valBox1} string={plays[valBox1]} />
-      <Button onClick={click} index={valBox2} string={plays[valBox2]} />
-      <Button onClick={click} index={valBox3} string={plays[valBox3]} />
+      <Button
+        onClick={click}
+        index={valBox1}
+        string={plays[valBox1]}
+      />
+      <Button
+        onClick={click}
+        index={valBox2}
+        string={plays[valBox2]}
+      />
+      <Button
+        onClick={click}
+        index={valBox3}
+        string={plays[valBox3]}
+      />
     </div>
   );
 }

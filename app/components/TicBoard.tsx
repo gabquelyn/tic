@@ -1,12 +1,15 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Row from "./Row";
 import { VscDebugRestart } from "react-icons/vsc";
+import { WinnerContext } from "../page";
 export default function TicBoard() {
   const [toggle, setToggle] = useState(false);
   const [plays, setPlays] = useState<playChar[]>([]);
+  const { winner, setWinner} = useContext(WinnerContext);
   const click = (index: number) => {
     if (plays[index]) return;
+    if (winner) return;
     const updatedPlays = [...plays];
     updatedPlays[index] = toggle ? "x" : "o";
     setPlays(updatedPlays);
@@ -16,7 +19,31 @@ export default function TicBoard() {
   const resetGame = () => {
     setPlays([]);
     setToggle(false);
+    setWinner(null);
   };
+
+  useEffect(() => {
+    const wins = [
+      [0, 1, 2],
+      [0, 3, 6],
+      [0, 4, 8],
+      [3, 4, 5],
+      [1, 4, 7],
+      [2, 4, 6],
+      [2, 5, 8],
+      [6, 7, 8],
+    ];
+    for (const win of wins) {
+      console.log(plays[win[0]], plays[win[1]], plays[win[2]]);
+      if (
+        plays[win[0]] === plays[win[1]] &&
+        plays[win[1]] === plays[win[2]] &&
+        plays[win[0]]
+      ) {
+        setWinner(plays[win[0]]);
+      }
+    }
+  }, [plays]);
 
   return (
     <>
