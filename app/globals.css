@@ -70,3 +70,78 @@ body {
 .fade-out {
   animation: disappear 0.5s ease-out;
 }
+
+.cross-r::before{
+  content: "";
+  position: absolute;
+  border-radius: 4px;
+  height: 140%;
+  width: 2px;
+  transform-origin: top;
+  transform: rotate(-45deg);
+}
+
+.cross-l::before{
+  content: "";
+  position: absolute;
+  border-radius: 4px;
+  right: 0;
+  height: 140%;
+  width: 2px;
+  transform-origin: top;
+  transform: rotate(45deg);
+}
+
+.cross-top::before{
+  content: "";
+  position: absolute;
+  border-radius: 4px;
+  top: 16%;
+  height: 2px;
+  width: 100%;
+}
+
+.cross-center::before{
+  content: "";
+  position: absolute;
+  border-radius: 4px;
+  top: 50%;
+  height: 2px;
+  width: 100%;
+}
+
+.cross-bottom::before{
+  content: "";
+  position: absolute;
+  border-radius: 4px;
+  bottom: 16%;
+  height: 2px;
+  width: 100%;
+}
+
+.cross-left::before{
+  content: "";
+  position: absolute;
+  border-radius: 4px;
+  height: 100%;
+  width: 2px;
+  left: 16%;
+}
+
+.cross-middle::before{
+  content: "";
+  position: absolute;
+  border-radius: 4px;
+  height: 100%;
+  width: 2px;
+  left: 50%;
+}
+
+.cross-right::before{
+  content: "";
+  position: absolute;
+  border-radius: 4px;
+  height: 100%;
+  width: 2px;
+  right: 16%;
+}

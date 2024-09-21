@@ -1,19 +1,9 @@
 "use client"
-import React, { createContext, useState } from "react";
+import React, { useState } from "react";
 import TicBoard from "./components/TicBoard";
-
-type WinnerContextType = {
-  winner: playChar | null;
-  setWinner: React.Dispatch<React.SetStateAction<playChar | null>>;
-};
-
-const initialContextValue: WinnerContextType = {
-  winner: null,
-  setWinner: () => {},
-};
+import { WinnerContext } from "./store/winnerContext";
 
 
-export const WinnerContext = createContext(initialContextValue);
 export default function HomePage() {
   const [winner, setWinner] = useState<playChar | null>(null);
   return (

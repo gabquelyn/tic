@@ -2,7 +2,7 @@
 import React, { useContext } from "react";
 import Cross from "./Cross";
 import Circle from "./Circle";
-import { WinnerContext } from "../page";
+import { WinnerContext } from "../store/winnerContext";
 export default function Button({
   string,
   onClick,
