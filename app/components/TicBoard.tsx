@@ -2,42 +2,77 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Row from "./Row";
 import { VscDebugRestart } from "react-icons/vsc";
+import wins from "@/wins.json";
 import { WinnerContext } from "../store/winnerContext";
 export default function TicBoard() {
-  const [toggle, setToggle] = useState(false);
+  const [computer, setComputer] = useState(true);
   const [plays, setPlays] = useState<playChar[]>([]);
   const [stroke, setStroke] = useState("");
+
+  const [comOp, setComOp] = useState(wins);
+  const [playerOp, setPlayerOp] = useState(wins);
+
   const clickRef = useRef<HTMLAudioElement | null>(null);
   const winRef = useRef<HTMLAudioElement | null>(null);
   const { winner, setWinner } = useContext(WinnerContext);
+
+  // to defend an almost completed step.
+  useEffect(() => {
+    const playerCloseWins = playerOp.filter((arr) => {
+      for (let i = 0; i < plays.length; i++) {
+        if (plays[i] === "o" && arr.includes(i)) {
+          return arr;
+        }
+      }
+    });
+    console.log(playerOp, playerCloseWins);
+    for (const arr of playerCloseWins) {
+      if (
+        (plays[arr[0]] && plays[arr[1]]) ||
+        (plays[arr[0]] && plays[arr[2]]) ||
+        (plays[arr[1]] && plays[arr[2]])
+      ) {
+        const nextPlay = arr.find((i) => !plays[i]);
+        console.log("close call here!", nextPlay);
+      } else {
+        console.log("No threat from player yet");
+      }
+    }
+  }, [comOp]);
+
+  const calOptions = (index: number) => {
+    // calculating win opportunities
+    if (computer) {
+      const filteredPlayerOpp = playerOp.filter((arr) => !arr.includes(index));
+      setPlayerOp(filteredPlayerOpp);
+    } else {
+      const filteredCompOp = comOp.filter((arr) => !arr.includes(index));
+      setComOp(filteredCompOp);
+      // should check for an almost completed step for a computer first.
+    }
+  };
+
   const click = (index: number) => {
     if (plays[index]) return;
     if (winner) return;
     clickRef.current?.play();
     const updatedPlays = [...plays];
-    updatedPlays[index] = toggle ? "x" : "o";
+    updatedPlays[index] = computer ? "x" : "o";
+    calOptions(index);
     setPlays(updatedPlays);
-    setToggle((prev) => !prev);
+    setComputer((prev) => !prev);
   };
 
   const resetGame = () => {
     setPlays([]);
-    setToggle(false);
+    setComputer(false);
     setWinner(null);
     setStroke("");
+    setComOp([]);
+    setPlayerOp([]);
   };
 
   useEffect(() => {
-    const wins = [
-      [0, 1, 2],
-      [0, 3, 6],
-      [0, 4, 8],
-      [3, 4, 5],
-      [1, 4, 7],
-      [2, 4, 6],
-      [2, 5, 8],
-      [6, 7, 8],
-    ];
     for (const win of wins) {
       if (
         plays[win[0]] === plays[win[1]] &&
