@@ -92,7 +92,7 @@ export default function TicBoard() {
       }
     }
     if (!computer) {
-      enqueueSnackbar({ message: "You go first", variant: "info" });
+      enqueueSnackbar({ message: "You go first", variant: "info", });
       return console.log("Not computer time to play");
     }
 
