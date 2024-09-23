@@ -5,11 +5,11 @@ import wins from "@/wins.json";
 import Modal from "./Modal";
 import Character from "./Character";
 import { WinnerContext } from "../store/winnerContext";
+import { enqueueSnackbar, SnackbarProvider } from "notistack";
 export default function TicBoard() {
   const [computer, setComputer] = useState(true);
   const [plays, setPlays] = useState<playChar[]>([]);
   const [stroke, setStroke] = useState("");
-  const [callUser, setCallUser] = useState(false);
   const [jest, setJest] = useState(false);
   const [status, setStatus] = useState<Status | null>(null);
   const [comOp, setComOp] = useState(wins);
@@ -60,13 +60,6 @@ export default function TicBoard() {
   }, [jest]);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (callUser) setCallUser((prev) => !prev);
-    }, 3000);
-    return () => clearTimeout(timeout);
-  }, [callUser]);
-
-  useEffect(() => {
     // check if it is a draw
     if (comOp.length === 0) {
       return setStatus("draw");
@@ -99,7 +92,7 @@ export default function TicBoard() {
       }
     }
     if (!computer) {
-      setCallUser(true);
+      enqueueSnackbar({ message: "You go first", variant: "info" });
       return console.log("Not computer time to play");
     }
 
@@ -180,6 +173,7 @@ export default function TicBoard() {
 
   return (
     <>
+      <SnackbarProvider />
       <div
         className={`flex relative flex-col gap-1 fade-pop-in before:bg-yellow-500 ${stroke}`}
       >
@@ -187,9 +181,6 @@ export default function TicBoard() {
         <audio src={`/assets/win.mp3`} ref={winRef}></audio>
         {status && <Modal status={status} restart={resetGame} />}
         {jest && <Character display={jest} />}
-        {callUser && (
-          <Character display={callUser} message={"You go first! 🚀"} />
-        )}
         <Row row={1} click={click} plays={plays} />
         <Row row={2} click={click} plays={plays} />
         <Row row={3} click={click} plays={plays} />
