@@ -21,6 +21,10 @@ body {
   background: var(--background);
 }
 
+.message{
+  background: var(--box);
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
