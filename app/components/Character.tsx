@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { Handjet, Pixelify_Sans } from "next/font/google";
+import { Pixelify_Sans } from "next/font/google";
 const handjet = Pixelify_Sans({ subsets: ["latin"], weight: "400" });
 const jestMessages = [
   "Gotcha! 😝",
