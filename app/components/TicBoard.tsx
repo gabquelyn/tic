@@ -14,7 +14,6 @@ export default function TicBoard() {
   const [status, setStatus] = useState<Status | null>(null);
   const [comOp, setComOp] = useState(wins);
   const [playerOp, setPlayerOp] = useState(wins);
-  const toggle = true;
   const clickRef = useRef<HTMLAudioElement | null>(null);
   const winRef = useRef<HTMLAudioElement | null>(null);
   const { winner, setWinner } = useContext(WinnerContext);
