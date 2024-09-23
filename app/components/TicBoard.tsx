@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Row from "./Row";
-
 import wins from "@/wins.json";
 import Modal from "./Modal";
 import Character from "./Character";
@@ -10,11 +9,12 @@ export default function TicBoard() {
   const [computer, setComputer] = useState(true);
   const [plays, setPlays] = useState<playChar[]>([]);
   const [stroke, setStroke] = useState("");
+  const [callUser, setCallUser] = useState(false);
   const [jest, setJest] = useState(false);
   const [status, setStatus] = useState<Status | null>(null);
   const [comOp, setComOp] = useState(wins);
   const [playerOp, setPlayerOp] = useState(wins);
-
+  const toggle = true;
   const clickRef = useRef<HTMLAudioElement | null>(null);
   const winRef = useRef<HTMLAudioElement | null>(null);
   const { winner, setWinner } = useContext(WinnerContext);
@@ -42,39 +42,6 @@ export default function TicBoard() {
     }
   };
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (jest) setJest((prev) => !prev);
-    }, 3000);
-    return () => clearTimeout(timeout);
-  }, [jest]);
-
-  useEffect(() => {
-    // check if it is a draw
-    if (comOp.length === 0 || playerOp.length === 0) {
-      return setStatus("draw");
-    }
-
-    // to defend an track the opponent almost completed step.
-    const defencePlay = findCloseCall("o", playerOp);
-    // should check for an almost completed step for a computer first.
-    const winChance = findCloseCall("x", comOp);
-    if (winChance) return console.log("Computer can win here!", winChance);
-    if (defencePlay) {
-      setJest(true);
-      return console.log("Computer should defend!", defencePlay);
-    }
-
-    // Find the other best options
-    const selectedCombo = comOp[Math.floor(Math.random() * (comOp.length - 1))];
-    for (const index of selectedCombo) {
-      if (!plays[index]) {
-        console.log("Computer should play", index);
-        break;
-      }
-    }
-  }, [comOp]);
-
   const calOptions = (index: number) => {
     // calculating win opportunities
     if (computer) {
@@ -86,15 +53,83 @@ export default function TicBoard() {
     }
   };
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (jest) setJest((prev) => !prev);
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, [jest]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (callUser) setCallUser((prev) => !prev);
+    }, 3000);
+    return () => clearTimeout(timeout);
+  }, [callUser]);
+
+  useEffect(() => {
+    // check if it is a draw
+    if (comOp.length === 0) {
+      return setStatus("draw");
+    }
+
+    let play: number = 0;
+
+    // to defend an track the opponent almost completed step.
+    const defencePlay = findCloseCall("o", playerOp);
+    // should check for an almost completed step for a computer first.
+    const winChance = findCloseCall("x", comOp);
+    if (winChance) {
+      setJest(true);
+      play = winChance;
+      console.log("Computer can win here!", winChance);
+    } else if (defencePlay) {
+      setJest(true);
+      play = defencePlay;
+      console.log("Computer should defend!", defencePlay);
+    } else {
+      // Find the other best options
+      const selectedCombo =
+        comOp[Math.floor(Math.random() * (comOp.length - 1))];
+      for (const index of selectedCombo) {
+        if (!plays[index]) {
+          play = index;
+          console.log("Computer should play", index);
+          break;
+        }
+      }
+    }
+    if (!computer) {
+      setCallUser(true);
+      return console.log("Not computer time to play");
+    }
+
+    console.log(play);
+    const computerPlayTimer = setTimeout(() => {
+      const updatedPlays = [...plays];
+      updatedPlays[play] = "x";
+      calOptions(play);
+      setPlays(updatedPlays);
+      setComputer(false);
+    }, 2000);
+    return () => {
+      clearTimeout(computerPlayTimer);
+    };
+  }, [comOp]);
+
   const click = (index: number) => {
     if (plays[index]) return;
     if (winner) return;
+    if (computer) return;
     clickRef.current?.play();
+    if (playerOp.length === 0) {
+      return setStatus("draw");
+    }
     const updatedPlays = [...plays];
     updatedPlays[index] = computer ? "x" : "o";
     calOptions(index);
     setPlays(updatedPlays);
-    setComputer((prev) => !prev);
+    setComputer(true);
   };
 
   const resetGame = () => {
@@ -103,7 +138,6 @@ export default function TicBoard() {
     setStroke("");
     setComOp(wins);
     setPlayerOp(wins);
-    setComputer(true);
     setStatus(null);
   };
 
@@ -154,6 +188,9 @@ export default function TicBoard() {
         <audio src={`/assets/win.mp3`} ref={winRef}></audio>
         {status && <Modal status={status} restart={resetGame} />}
         {jest && <Character display={jest} />}
+        {callUser && (
+          <Character display={callUser} message={"You go first! 🚀"} />
+        )}
         <Row row={1} click={click} plays={plays} />
         <Row row={2} click={click} plays={plays} />
         <Row row={3} click={click} plays={plays} />
