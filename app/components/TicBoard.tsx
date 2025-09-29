@@ -5,7 +5,6 @@ import wins from "@/wins.json";
 import Modal from "./Modal";
 import Character from "./Character";
 import { WinnerContext } from "../store/winnerContext";
-import { enqueueSnackbar, SnackbarProvider } from "notistack";
 export default function TicBoard() {
   const [computer, setComputer] = useState(true);
   const [plays, setPlays] = useState<playChar[]>([]);
@@ -172,7 +171,6 @@ export default function TicBoard() {
 
   return (
     <>
-      <SnackbarProvider />
       <div
         className={`flex relative flex-col gap-1 fade-pop-in before:bg-yellow-500 ${stroke}`}
       >
