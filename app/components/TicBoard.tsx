@@ -92,7 +92,6 @@ export default function TicBoard() {
       }
     }
     if (!computer) {
-      enqueueSnackbar({ message: "You go first", variant: "info", });
       return console.log("Not computer time to play");
     }
 
@@ -184,6 +183,7 @@ export default function TicBoard() {
         <Row row={1} click={click} plays={plays} />
         <Row row={2} click={click} plays={plays} />
         <Row row={3} click={click} plays={plays} />
+        {!computer && <Character display start/>}
       </div>
     </>
   );
